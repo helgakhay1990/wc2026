@@ -127,6 +127,49 @@
   .foot a:hover{text-decoration:underline}
   .yc{display:inline-block;width:11px;height:15px;border-radius:2px;vertical-align:-2px}
 
+  /* ===== ОГОНЬ: анимации и эффекты ===== */
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  @keyframes glowPulse{0%,100%{box-shadow:0 0 14px var(--neon);opacity:1}50%{box-shadow:0 0 28px var(--neon);opacity:.5}}
+  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+  @keyframes barGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes floatBall{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(14deg)}}
+  @keyframes redPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.55}}
+
+  .wrap > *{opacity:0;animation:rise .5s ease forwards}
+  .wrap > *:nth-child(1){animation-delay:.04s}
+  .wrap > *:nth-child(2){animation-delay:.09s}
+  .wrap > *:nth-child(3){animation-delay:.14s}
+  .wrap > *:nth-child(4){animation-delay:.19s}
+  .wrap > *:nth-child(5){animation-delay:.24s}
+  .wrap > *:nth-child(6){animation-delay:.29s}
+  .wrap > *:nth-child(n+7){animation-delay:.33s}
+
+  .card{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+  .card:hover{transform:translateY(-3px);border-color:var(--neon);box-shadow:0 12px 32px rgba(57,224,122,.20)}
+  .final:hover{box-shadow:0 14px 44px rgba(57,224,122,.30)}
+
+  h1 .ball{display:inline-block;animation:floatBall 3s ease-in-out infinite}
+  .scoreboard::after{animation:glowPulse 1.8s ease-in-out infinite}
+
+  .matchup .vs{box-shadow:0 0 18px rgba(57,224,122,.55)}
+  .champ{background-size:200% 100%;animation:shimmer 3.2s linear infinite}
+
+  .bar > span{transform-origin:left center;animation:barGrow 1.1s cubic-bezier(.2,.8,.2,1) forwards}
+  .win{text-shadow:0 0 10px rgba(57,224,122,.35)}
+  tbody tr{transition:background .15s ease}
+
+  /* LIVE-бейдж дня */
+  .live{display:inline-flex;align-items:center;gap:6px;background:rgba(255,77,77,.14);
+    color:var(--red);border:1px solid rgba(255,77,77,.4);border-radius:20px;
+    padding:1px 10px;font-family:'Oswald';font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+  .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red);
+    box-shadow:0 0 9px var(--red);animation:redPulse 1.3s ease-in-out infinite}
+
+  @media(prefers-reduced-motion:reduce){
+    .wrap > *{opacity:1;animation:none}
+    .bar > span,h1 .ball,.scoreboard::after,.champ,.live::before{animation:none}
+  }
+
   /* ===== ПЛАНШЕТ ===== */
   @media(max-width:720px){
     .kpis{grid-template-columns:1fr 1fr;gap:12px}
@@ -192,7 +235,7 @@
   </div>
 
   <section class="card">
-    <h2>📅 Матчи сегодня · 30 июня <span style="color:var(--mut);font-weight:400;font-size:11px">(время МСК)</span></h2>
+    <h2>📅 Матчи сегодня · 30 июня <span class="live">Live</span> <span style="color:var(--mut);font-weight:400;font-size:11px">(время МСК)</span></h2>
     <div class="tw">
     <table>
       <thead><tr><th>МСК</th><th>Матч</th><th>Стадия · город</th></tr></thead>
