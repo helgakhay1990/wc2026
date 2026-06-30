@@ -5,162 +5,277 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ЧМ-2026 · Прогноз-дашборд</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Rubik:wght@400;500;600&display=swap');
   :root{
-    --bg:#0d1117; --card:#161b22; --line:#232a33; --txt:#e6edf3; --mut:#8b949e;
-    --acc:#3fb950; --warn:#d29922; --bad:#f85149; --info:#58a6ff;
+    --turf1:#1f7a3f; --turf2:#1a6e38; --ink:#0a1410; --panel:#10231a; --panel2:#0c1b14;
+    --line:#1e3d2c; --txt:#eafaf0; --mut:#8fbfa3; --neon:#39e07a;
+    --gold:#ffcf33; --warn:#f0a82a; --orange:#ff7a3d; --red:#ff4d4d; --chalk:#dff3e6;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:24px;max-width:1100px;margin:0 auto}
-  h1{font-size:26px;margin-bottom:4px}
-  .sub{color:var(--mut);font-size:13px;margin-bottom:20px}
-  .grid{display:grid;gap:16px}
-  .cols-3{grid-template-columns:repeat(3,1fr)}
-  .cols-2{grid-template-columns:repeat(2,1fr)}
-  @media(max-width:760px){.cols-3,.cols-2{grid-template-columns:1fr}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
-  .card h2{font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin-bottom:12px}
-  .kpi{font-size:32px;font-weight:700}
-  .kpi small{font-size:14px;color:var(--mut);font-weight:400}
+  body{
+    font-family:'Rubik',-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--txt); min-height:100vh; padding:0 0 40px;
+    background:
+      linear-gradient(180deg,rgba(8,18,12,.82),rgba(8,18,12,.92)),
+      repeating-linear-gradient(90deg,var(--turf1) 0 56px,var(--turf2) 56px 112px);
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  h1,h2,h3,.score{font-family:'Oswald',sans-serif;letter-spacing:.5px}
+
+  /* ТАБЛО-ШАПКА */
+  .scoreboard{
+    background:linear-gradient(180deg,#06120c,#0b1d14);
+    border-bottom:3px solid var(--neon);
+    box-shadow:0 6px 30px rgba(0,0,0,.5);
+    padding:22px 0 18px; margin-bottom:26px; position:relative; overflow:hidden;
+  }
+  .scoreboard::before{
+    content:""; position:absolute; right:-60px; top:-60px; width:220px; height:220px;
+    border:2px solid rgba(57,224,122,.18); border-radius:50%;
+  }
+  .scoreboard::after{
+    content:""; position:absolute; right:48px; top:48px; width:14px; height:14px;
+    background:var(--neon); border-radius:50%; box-shadow:0 0 18px var(--neon);
+  }
+  h1{font-size:34px;font-weight:700;text-transform:uppercase;line-height:1}
+  h1 .ball{filter:drop-shadow(0 0 8px rgba(57,224,122,.6))}
+  .tagline{color:var(--mut);font-size:13px;margin-top:6px;font-family:'Rubik'}
+  .stamp{display:inline-block;background:#06120c;border:1px solid var(--neon);
+    color:var(--neon);padding:2px 12px;border-radius:4px;font-size:12px;
+    font-family:'Oswald';letter-spacing:1px;text-transform:uppercase}
+
+  /* KPI ТАБЛО */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+  @media(max-width:720px){.kpis{grid-template-columns:1fr}}
+  .kpi{
+    background:linear-gradient(180deg,#0b1d14,#081710);
+    border:1px solid var(--line);border-top:3px solid var(--neon);
+    border-radius:10px;padding:16px 18px;position:relative;
+  }
+  .kpi .lbl{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:1.5px}
+  .kpi .val{font-family:'Oswald';font-size:38px;font-weight:700;color:var(--chalk);line-height:1.1}
+  .kpi .val small{font-size:15px;color:var(--mut);font-weight:400}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px;margin-bottom:20px;box-shadow:0 4px 18px rgba(0,0,0,.25);
+  }
+  .card > h2{
+    font-size:15px;text-transform:uppercase;letter-spacing:1.5px;color:var(--neon);
+    margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:8px;font-weight:600;
+  }
+  .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:720px){.cols-2{grid-template-columns:1fr}}
+
+  /* ФИНАЛ — ТАБЛО МАТЧА */
+  .final{
+    background:
+      radial-gradient(circle at 50% 0%,rgba(57,224,122,.12),transparent 60%),
+      linear-gradient(180deg,#0c2017,#08160f);
+    border:1px solid var(--neon);text-align:center;padding:26px 20px;
+  }
+  .final .ttl{color:var(--mut);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+  .matchup{
+    display:flex;align-items:center;justify-content:center;gap:22px;margin:14px 0;
+    font-family:'Oswald';font-size:30px;font-weight:700;
+  }
+  .matchup .vs{
+    font-size:16px;color:var(--ink);background:var(--neon);
+    border-radius:6px;padding:4px 10px;letter-spacing:1px;
+  }
+  .champ{
+    display:inline-block;margin-top:6px;background:linear-gradient(90deg,var(--gold),#ffe07a);
+    color:#3a2a00;font-family:'Oswald';font-weight:700;font-size:18px;
+    padding:6px 18px;border-radius:30px;letter-spacing:.5px;
+    box-shadow:0 0 22px rgba(255,207,51,.4);
+  }
+  .final .note{color:var(--mut);font-size:13px;margin-top:12px;font-family:'Rubik'}
+
   table{width:100%;border-collapse:collapse;font-size:14px}
-  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase}
-  tr:last-child td{border-bottom:none}
-  .pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12px;font-weight:600}
-  .g{background:rgba(63,185,80,.15);color:var(--acc)}
-  .y{background:rgba(210,153,34,.15);color:var(--warn)}
-  .o{background:rgba(248,129,73,.15);color:#f8814a}
-  .r{background:rgba(248,81,73,.15);color:var(--bad)}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(57,224,122,.05)}
   .done{color:var(--mut)}
-  .bar{height:8px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:4px}
-  .bar > span{display:block;height:100%;background:linear-gradient(90deg,var(--info),var(--acc))}
-  .final{background:linear-gradient(135deg,#1f6feb22,#3fb95022);border:1px solid #1f6feb55}
-  .final .teams{font-size:22px;font-weight:700;margin:6px 0}
-  .champ{font-size:18px;color:var(--acc);font-weight:700}
-  section{margin-top:22px}
-  a{color:var(--info)}
-  .foot{margin-top:28px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:14px}
-  .stamp{display:inline-block;background:var(--line);padding:2px 10px;border-radius:6px;font-size:12px;color:var(--mut)}
+  .win{color:var(--neon);font-weight:600}
+
+  /* КАРТОЧКИ-ПИЛЛЫ */
+  .pill{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;
+    font-weight:600;font-family:'Oswald';letter-spacing:.5px;text-transform:uppercase}
+  .g{background:rgba(57,224,122,.16);color:var(--neon);border:1px solid rgba(57,224,122,.35)}
+  .y{background:rgba(240,168,42,.16);color:var(--warn);border:1px solid rgba(240,168,42,.4)}
+  .o{background:rgba(255,122,61,.16);color:var(--orange);border:1px solid rgba(255,122,61,.4)}
+  .r{background:rgba(255,77,77,.16);color:var(--red);border:1px solid rgba(255,77,77,.4)}
+  .ko{background:rgba(57,224,122,.1);color:var(--mut);border:1px solid var(--line)}
+
+  /* ПОЛОСЫ ШАНСОВ */
+  .odds td{padding:10px}
+  .bar{height:10px;border-radius:6px;background:#06120c;overflow:hidden;border:1px solid var(--line)}
+  .bar > span{display:block;height:100%;
+    background:linear-gradient(90deg,var(--neon),var(--gold));border-radius:6px}
+  .pct{font-family:'Oswald';font-weight:600;color:var(--chalk)}
+
+  .foot{margin-top:24px;color:var(--mut);font-size:12px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:16px;line-height:1.6}
+  .foot a{color:var(--neon);text-decoration:none}
+  .foot a:hover{text-decoration:underline}
+  .yc{display:inline-block;width:11px;height:15px;border-radius:2px;vertical-align:-2px}
 </style>
 </head>
 <body>
 
-  <h1>⚽ ЧМ-2026 · Прогноз-дашборд</h1>
-  <div class="sub">США · Канада · Мексика — финал 19 июля, Нью-Джерси · <span class="stamp" id="stamp">обновлено 30 июня 2026</span></div>
+<div class="scoreboard">
+  <div class="wrap">
+    <h1><span class="ball">⚽</span> ЧМ-2026 · ПРОГНОЗ</h1>
+    <div class="tagline">США · Канада · Мексика &nbsp;|&nbsp; финал 19 июля, Нью-Джерси &nbsp;•&nbsp;
+      <span class="stamp" id="stamp">обновлено 30 июня 2026</span></div>
+  </div>
+</div>
 
-  <div class="grid cols-3">
-    <div class="card"><h2>Стадия</h2><div class="kpi">1/16 <small>финала</small></div></div>
-    <div class="card"><h2>Сыграно матчей 1/16</h2><div class="kpi" id="played">4 <small>/ 16</small></div></div>
-    <div class="card"><h2>До финала</h2><div class="kpi" id="countdown">— <small>дней</small></div></div>
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi"><div class="lbl">Стадия</div><div class="val">1/16 <small>финала</small></div></div>
+    <div class="kpi"><div class="lbl">Сыграно пар 1/16</div><div class="val" id="played">4 <small>/ 16</small></div></div>
+    <div class="kpi"><div class="lbl">До финала</div><div class="val" id="countdown">— <small>дней</small></div></div>
   </div>
 
   <section class="card final">
-    <h2>Прогноз финала</h2>
-    <div class="teams">🇫🇷 Франция &nbsp;—&nbsp; 🇦🇷 Аргентина</div>
-    <div class="champ">🏆 Чемпион: Франция</div>
-    <div class="sub" style="margin-top:8px">Состав Франции цел, нет зависимости от одного игрока, верхняя половина проходимая. Месси сыграл и забил с пенальти — нижняя половина за Аргентиной окрепла; Неймар вернулся, но Бразилию держат потери Родриго и Милитана.</div>
+    <div class="ttl">🏟️ Прогноз финала · 19 июля · Нью-Джерси</div>
+    <div class="matchup">🇫🇷 Франция <span class="vs">VS</span> Аргентина 🇦🇷</div>
+    <div class="champ">🏆 Чемпион — Франция</div>
+    <div class="note">Состав цел, нет зависимости от одного игрока, проходимая половина сетки.<br>
+      При здоровых Ямале и Месси наверх возвращаются Испания и Аргентина.</div>
   </section>
 
-  <section>
-    <h2 style="color:var(--mut);font-size:14px;text-transform:uppercase;margin-bottom:10px">Шансы на титул (с поправкой на травмы)</h2>
-    <div class="card">
-      <table id="oddsTable">
-        <thead><tr><th>Сборная</th><th>Шанс</th><th></th></tr></thead>
-        <tbody>
-          <tr><td>🇫🇷 Франция</td><td>23%</td><td><div class="bar"><span style="width:23%"></span></div></td></tr>
-          <tr><td>🇦🇷 Аргентина</td><td>19%</td><td><div class="bar"><span style="width:19%"></span></div></td></tr>
-          <tr><td>🇪🇸 Испания</td><td>18%</td><td><div class="bar"><span style="width:18%"></span></div></td></tr>
-          <tr><td>🇧🇷 Бразилия</td><td>14%</td><td><div class="bar"><span style="width:14%"></span></div></td></tr>
-          <tr><td>🏴 Англия</td><td>7%</td><td><div class="bar"><span style="width:7%"></span></div></td></tr>
-          <tr><td>🇲🇦 Марокко</td><td>6%</td><td><div class="bar"><span style="width:6%"></span></div></td></tr>
-        </tbody>
-      </table>
-      <div class="sub" style="margin-top:10px">Прикидка вероятностей — авторская, не котировки букмекеров.</div>
-    </div>
+  <section class="card">
+    <h2>📊 Шансы на титул <span style="color:var(--mut);font-weight:400;font-size:11px">(с поправкой на факторы)</span></h2>
+    <table class="odds">
+      <tbody>
+        <tr><td style="width:160px">🇫🇷 Франция</td><td style="width:50px" class="pct">24%</td><td><div class="bar"><span style="width:24%"></span></div></td></tr>
+        <tr><td>🇪🇸 Испания</td><td class="pct">19%</td><td><div class="bar"><span style="width:19%"></span></div></td></tr>
+        <tr><td>🇦🇷 Аргентина</td><td class="pct">17%</td><td><div class="bar"><span style="width:17%"></span></div></td></tr>
+        <tr><td>🇧🇷 Бразилия</td><td class="pct">13%</td><td><div class="bar"><span style="width:13%"></span></div></td></tr>
+        <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия</td><td class="pct">7%</td><td><div class="bar"><span style="width:7%"></span></div></td></tr>
+        <tr><td>🇲🇦 Марокко</td><td class="pct">7%</td><td><div class="bar"><span style="width:7%"></span></div></td></tr>
+      </tbody>
+    </table>
+    <div style="color:var(--mut);font-size:12px;margin-top:10px">Прикидка вероятностей — авторская, не котировки букмекеров.</div>
   </section>
 
-  <section>
-    <h2 style="color:var(--mut);font-size:14px;text-transform:uppercase;margin-bottom:10px">Сетка 1/16 — прогноз прохода</h2>
-    <div class="card">
-      <table id="r16Table">
-        <thead><tr><th>Пара</th><th>Травмы</th><th>Проход</th></tr></thead>
-        <tbody>
-          <tr><td class="done">🇨🇦 Канада — 🇿🇦 ЮАР</td><td><span class="pill g">сыграно</span></td><td><b>Канада 1:0</b></td></tr>
-          <tr><td class="done">🇧🇷 Бразилия — 🇯🇵 Япония</td><td><span class="pill g">сыграно</span></td><td><b>Бразилия 2:1</b></td></tr>
-          <tr><td class="done">🇩🇪 Германия — 🇵🇾 Парагвай</td><td><span class="pill g">сыграно</span></td><td><b>Парагвай (пен.)</b></td></tr>
-          <tr><td class="done">🇳🇱 Нидерланды — 🇲🇦 Марокко</td><td><span class="pill g">сыграно</span></td><td><b>Марокко (пен.)</b></td></tr>
-          <tr><td>🇨🇮 Кот-д'Ивуар — 🇳🇴 Норвегия</td><td><span class="pill g">лёгкие</span></td><td>Норвегия <span class="done">(идёт)</span></td></tr>
-          <tr><td>🇫🇷 Франция — 🇸🇪 Швеция</td><td><span class="pill g">лёгкие</span></td><td>Франция <span class="done">(идёт)</span></td></tr>
-          <tr><td>🇲🇽 Мексика — 🇪🇨 Эквадор</td><td><span class="pill y">умерен.</span></td><td>Мексика <span class="done">(идёт)</span></td></tr>
-          <tr><td>🏴 Англия — 🇨🇩 ДР Конго</td><td><span class="pill y">умерен.</span></td><td>Англия</td></tr>
-          <tr><td>🇧🇪 Бельгия — 🇸🇳 Сенегал</td><td><span class="pill g">лёгкие</span></td><td>Бельгия</td></tr>
-          <tr><td>🇺🇸 США — 🇧🇦 Босния</td><td><span class="pill y">умерен.</span></td><td>США</td></tr>
-          <tr><td>🇪🇸 Испания — 🇦🇹 Австрия</td><td><span class="pill o">серьёзн.</span></td><td>Испания</td></tr>
-          <tr><td>🇵🇹 Португалия — 🇭🇷 Хорватия</td><td><span class="pill g">лёгкие</span></td><td>Португалия</td></tr>
-          <tr><td>🇨🇭 Швейцария — 🇩🇿 Алжир</td><td><span class="pill g">лёгкие</span></td><td>Швейцария</td></tr>
-          <tr><td>🇦🇺 Австралия — 🇪🇬 Египет</td><td><span class="pill g">лёгкие</span></td><td>Египет</td></tr>
-          <tr><td>🇦🇷 Аргентина — 🇨🇻 Кабо-Верде</td><td><span class="pill y">умерен.</span></td><td>Аргентина</td></tr>
-          <tr><td>🇨🇴 Колумбия — 🇬🇭 Гана</td><td><span class="pill g">лёгкие</span></td><td>Колумбия</td></tr>
-        </tbody>
-      </table>
-    </div>
+  <section class="card">
+    <h2>🗺️ Сетка 1/16 — прогноз прохода</h2>
+    <table>
+      <thead><tr><th>Пара</th><th>Факторы</th><th>Проход</th></tr></thead>
+      <tbody>
+        <tr><td class="done">🇨🇦 Канада — 🇿🇦 ЮАР</td><td><span class="pill ko">сыграно</span></td><td class="win">Канада 1:0</td></tr>
+        <tr><td class="done">🇧🇷 Бразилия — 🇯🇵 Япония</td><td><span class="pill ko">сыграно</span></td><td class="win">Бразилия 2:1</td></tr>
+        <tr><td class="done">🇩🇪 Германия — 🇵🇾 Парагвай</td><td><span class="pill ko">сыграно</span></td><td class="win">Парагвай (пен.)</td></tr>
+        <tr><td class="done">🇳🇱 Нидерланды — 🇲🇦 Марокко</td><td><span class="pill ko">сыграно</span></td><td class="win">Марокко (пен.)</td></tr>
+        <tr><td>🇨🇮 Кот-д'Ивуар — 🇳🇴 Норвегия</td><td><span class="pill g">ровно</span></td><td>Норвегия</td></tr>
+        <tr><td>🇫🇷 Франция — 🇸🇪 Швеция</td><td><span class="pill g">ровно</span></td><td>Франция</td></tr>
+        <tr><td>🇲🇽 Мексика — 🇪🇨 Эквадор</td><td><span class="pill y">поле</span></td><td>Мексика</td></tr>
+        <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия — 🇨🇩 ДР Конго</td><td><span class="pill y">травмы</span></td><td>Англия</td></tr>
+        <tr><td>🇧🇪 Бельгия — 🇸🇳 Сенегал</td><td><span class="pill g">ровно</span></td><td>Бельгия</td></tr>
+        <tr><td>🇺🇸 США — 🇧🇦 Босния</td><td><span class="pill y">поле</span></td><td>США</td></tr>
+        <tr><td>🇪🇸 Испания — 🇦🇹 Австрия</td><td><span class="pill o">травмы</span></td><td>Испания</td></tr>
+        <tr><td>🇵🇹 Португалия — 🇭🇷 Хорватия</td><td><span class="pill g">ровно</span></td><td>Португалия</td></tr>
+        <tr><td>🇨🇭 Швейцария — 🇩🇿 Алжир</td><td><span class="pill g">ровно</span></td><td>Швейцария</td></tr>
+        <tr><td>🇦🇺 Австралия — 🇪🇬 Египет</td><td><span class="pill g">зной+</span></td><td>Египет</td></tr>
+        <tr><td>🇦🇷 Аргентина — 🇨🇻 Кабо-Верде</td><td><span class="pill o">травмы</span></td><td>Аргентина</td></tr>
+        <tr><td>🇨🇴 Колумбия — 🇬🇭 Гана</td><td><span class="pill g">ровно</span></td><td>Колумбия</td></tr>
+      </tbody>
+    </table>
   </section>
 
-  <section class="grid cols-2">
-    <div class="card">
-      <h2>Верхняя половина — докуда дойдёт</h2>
+  <div class="cols-2">
+    <section class="card">
+      <h2>⬆️ Верхняя половина</h2>
       <table>
-        <tr><td>🇫🇷 Франция</td><td><span class="pill g">лёгк.</span></td><td><b>Финал</b></td></tr>
+        <tr><td>🇫🇷 Франция</td><td><span class="pill g">лёгк.</span></td><td class="win">Финал</td></tr>
         <tr><td>🇧🇷 Бразилия</td><td><span class="pill r">тяжёл.</span></td><td>1/2</td></tr>
-        <tr><td>🏴 Англия</td><td><span class="pill y">умер.</span></td><td>1/4</td></tr>
+        <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия</td><td><span class="pill y">умер.</span></td><td>1/4</td></tr>
         <tr><td>🇲🇦 Марокко</td><td><span class="pill g">лёгк.</span></td><td>1/4</td></tr>
         <tr><td>🇵🇾 Парагвай</td><td><span class="pill g">лёгк.</span></td><td>1/8</td></tr>
-        <tr><td>🇲🇽 Мексика</td><td><span class="pill y">умер.</span></td><td>1/8</td></tr>
-        <tr><td>🇨🇦 Канада</td><td><span class="pill g">лёгк.</span></td><td>1/8</td></tr>
+        <tr><td>🇲🇽 Мексика</td><td><span class="pill y">поле+</span></td><td>1/8</td></tr>
+        <tr><td>🇨🇦 Канада</td><td><span class="pill g">поле+</span></td><td>1/8</td></tr>
         <tr><td>🇳🇴 Норвегия</td><td><span class="pill g">лёгк.</span></td><td>1/8</td></tr>
       </table>
-    </div>
-    <div class="card">
-      <h2>Нижняя половина — докуда дойдёт</h2>
+    </section>
+    <section class="card">
+      <h2>⬇️ Нижняя половина</h2>
       <table>
-        <tr><td>🇦🇷 Аргентина</td><td><span class="pill y">умер.</span></td><td><b>Финал</b></td></tr>
+        <tr><td>🇦🇷 Аргентина</td><td><span class="pill o">серьёзн.</span></td><td class="win">Финал</td></tr>
         <tr><td>🇪🇸 Испания</td><td><span class="pill o">серьёзн.</span></td><td>1/2</td></tr>
         <tr><td>🇵🇹 Португалия</td><td><span class="pill g">лёгк.</span></td><td>1/4</td></tr>
         <tr><td>🇨🇴 Колумбия</td><td><span class="pill g">лёгк.</span></td><td>1/4</td></tr>
         <tr><td>🇧🇪 Бельгия</td><td><span class="pill g">лёгк.</span></td><td>1/8</td></tr>
         <tr><td>🇨🇭 Швейцария</td><td><span class="pill g">лёгк.</span></td><td>1/8</td></tr>
-        <tr><td>🇺🇸 США</td><td><span class="pill y">умер.</span></td><td>1/8</td></tr>
-        <tr><td>🇪🇬 Египет</td><td><span class="pill g">лёгк.</span></td><td>1/8</td></tr>
+        <tr><td>🇺🇸 США</td><td><span class="pill y">поле+</span></td><td>1/8</td></tr>
+        <tr><td>🇪🇬 Египет</td><td><span class="pill g">зной+</span></td><td>1/8</td></tr>
       </table>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <section class="card">
-    <h2>Лазарет фаворитов</h2>
-    <table id="injTable">
+    <h2>🤕 Травмы фаворитов</h2>
+    <table>
       <thead><tr><th>Сборная</th><th>Потери / под вопросом</th><th>Тяжесть</th></tr></thead>
       <tbody>
-        <tr><td>🇧🇷 Бразилия</td><td>Родриго (кресты, вне), Эстеван (бедро), Милитан (операция), Неймар (вернулся — камео в группе)</td><td><span class="pill r">тяжёлое</span></td></tr>
-        <tr><td>🇪🇸 Испания</td><td>Ямаль (готов, ограниченно), Н. Уильямс и Пино (повреждения в матче с Уругваем), Фермин Лопес (стопа)</td><td><span class="pill o">серьёзное</span></td></tr>
-        <tr><td>🇦🇷 Аргентина</td><td>Месси (сыграл, забил пенальти — готов), Балерди (икра), Паникелли (кресты)</td><td><span class="pill y">умеренное</span></td></tr>
-        <tr><td>🏴 Англия</td><td>Грилиш (стопа), Ливраменто</td><td><span class="pill y">умеренное</span></td></tr>
+        <tr><td>🇧🇷 Бразилия</td><td>Родриго (кресты, вне), Эстеван (бедро), Милитан (операция), Неймар (икра, под вопросом)</td><td><span class="pill r">тяжёлое</span></td></tr>
+        <tr><td>🇪🇸 Испания</td><td>Ямаль (пах/бедро, под вопросом), Н. Уильямс и Пино (повреждения с Уругваем), Фермин Лопес (стопа)</td><td><span class="pill o">серьёзное</span></td></tr>
+        <tr><td>🇦🇷 Аргентина</td><td>Месси (бедро, под вопросом), Балерди (икра), Паникелли (кресты)</td><td><span class="pill o">серьёзное</span></td></tr>
+        <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия</td><td>Грилиш (стопа), Ливраменто</td><td><span class="pill y">умеренное</span></td></tr>
         <tr><td>🇫🇷 Франция</td><td>Экитике (ахилл) — игрок ротации</td><td><span class="pill g">лёгкое</span></td></tr>
       </tbody>
     </table>
   </section>
 
+  <section class="card">
+    <h2>⚙️ Прочие факторы влияния</h2>
+    <table>
+      <thead><tr><th>Фактор</th><th>Кого касается</th><th>Влияние на прогноз</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="yc" style="background:var(--gold)"></span> Дисквалификации</td>
+          <td>Все сборные</td>
+          <td>Жёлтые сброшены после группы → в 1/16 у всех чистый лист; снова сброс после 1/4. Финал пропускают только за удаление в 1/2. Сейчас фактор низкий, копится к четвертьфиналам.</td>
+        </tr>
+        <tr>
+          <td>🌡️ Жара и зной</td>
+          <td>Дневные матчи: Хьюстон, Даллас, Монтеррей, Майами</td>
+          <td>&gt;⅓ матчей ЧМ в зоне опасной жары. Европейцам (Испания, Англия, Бельгия) в полуденный зной тяжелее; командам из жарких регионов (Марокко, Египет, латиноамериканцы) — легче.</td>
+        </tr>
+        <tr>
+          <td>😮‍💨 Усталость и календарь</td>
+          <td>Все, кто идёт в глубину сетки</td>
+          <td>Турнир 39 дней, 4 часовых пояса, джетлаг и ночные слоты. Усталость копится к плей-офф → больше ошибок и мышечных травм; преимущество у глубоких составов (Франция, Англия).</td>
+        </tr>
+        <tr>
+          <td>🏟️ Фактор поля</td>
+          <td>🇺🇸 США · 🇲🇽 Мексика · 🇨🇦 Канада</td>
+          <td>Хозяева: поддержка трибун, акклиматизация к жаре и поясам, минимум перелётов. Поднимает потолок прохода (Мексика дома в Мехико — ещё и высота).</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
   <div class="foot">
-    <b>Оговорка:</b> результаты и сетка — проверенные факты на 30.06; прогноз прохода — авторский. Завершены те же 4 пары (28–29.06), три матча 30.06 идут — счёта в источниках ещё нет, не проставляю. Месси и Неймар вышли на поле, Ямаль готов ограниченно — нагрузка лидеров к 1/8 ещё может перекроить нижнюю половину.<br>
+    <b>Оговорка:</b> результаты и сетка — проверенные факты на 30.06; прогноз и оценка факторов — авторские. Завершены 4 пары (28–29.06), три матча 30.06 идут — счёта в источниках ещё нет, не проставляю. Статусы Месси, Ямаля и Неймара (все под вопросом) к 1/8 могут перекроить нижнюю половину и финал.<br>
     <b>Источники:</b>
     <a href="https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info">ESPN — травмы</a> ·
     <a href="https://www.skysports.com/football/news/12098/13556636/world-cup-2026-bracket-and-knockout-fixtures-whos-facing-who-in-the-last-32-and-route-to-final">Sky — сетка</a> ·
-    <a href="https://www.sports.ru/football/blogs/3407615.html">Sports.ru — потери</a>
+    <a href="https://www.sports.ru/football/blogs/3407615.html">Sports.ru — потери</a> ·
+    <a href="https://www.mlssoccer.com/competitions/fifa-world-cup/news/2026-fifa-world-cup-yellow-card-and-suspension-rules">MLS — дисквалификации</a> ·
+    <a href="https://www.aljazeera.com/sports/2026/6/8/how-extreme-weather-and-heat-could-affect-players-at-world-cup-2026">Al Jazeera — жара</a>
   </div>
 
+</div>
+
 <script>
-  // обратный отсчёт до финала
   const finalDate = new Date('2026-07-19T00:00:00');
-  const today = new Date();
-  const days = Math.max(0, Math.ceil((finalDate - today)/86400000));
+  const days = Math.max(0, Math.ceil((finalDate - new Date())/86400000));
   document.getElementById('countdown').innerHTML = days + ' <small>дней</small>';
 </script>
 </body>
