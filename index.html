@@ -15,6 +15,7 @@
   body{
     font-family:'Rubik',-apple-system,BlinkMacSystemFont,sans-serif;
     color:var(--txt); min-height:100vh; padding:0 0 40px;
+    -webkit-text-size-adjust:100%;
     background:
       linear-gradient(180deg,rgba(8,18,12,.82),rgba(8,18,12,.92)),
       repeating-linear-gradient(90deg,var(--turf1) 0 56px,var(--turf2) 56px 112px);
@@ -42,11 +43,10 @@
   .tagline{color:var(--mut);font-size:13px;margin-top:6px;font-family:'Rubik'}
   .stamp{display:inline-block;background:#06120c;border:1px solid var(--neon);
     color:var(--neon);padding:2px 12px;border-radius:4px;font-size:12px;
-    font-family:'Oswald';letter-spacing:1px;text-transform:uppercase}
+    font-family:'Oswald';letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
 
   /* KPI ТАБЛО */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
-  @media(max-width:720px){.kpis{grid-template-columns:1fr}}
   .kpi{
     background:linear-gradient(180deg,#0b1d14,#081710);
     border:1px solid var(--line);border-top:3px solid var(--neon);
@@ -63,10 +63,9 @@
   .card > h2{
     font-size:15px;text-transform:uppercase;letter-spacing:1.5px;color:var(--neon);
     margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);
-    display:flex;align-items:center;gap:8px;font-weight:600;
+    display:flex;align-items:center;gap:8px;font-weight:600;flex-wrap:wrap;
   }
   .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  @media(max-width:720px){.cols-2{grid-template-columns:1fr}}
 
   /* ФИНАЛ — ТАБЛО МАТЧА */
   .final{
@@ -78,7 +77,7 @@
   .final .ttl{color:var(--mut);font-size:12px;letter-spacing:2px;text-transform:uppercase}
   .matchup{
     display:flex;align-items:center;justify-content:center;gap:22px;margin:14px 0;
-    font-family:'Oswald';font-size:30px;font-weight:700;
+    font-family:'Oswald';font-size:30px;font-weight:700;flex-wrap:wrap;
   }
   .matchup .vs{
     font-size:16px;color:var(--ink);background:var(--neon);
@@ -92,17 +91,18 @@
   }
   .final .note{color:var(--mut);font-size:13px;margin-top:12px;font-family:'Rubik'}
 
+  .tw{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
   th{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
   tbody tr:last-child td{border-bottom:none}
   tbody tr:hover{background:rgba(57,224,122,.05)}
   .done{color:var(--mut)}
-  .win{color:var(--neon);font-weight:600}
+  .win{color:var(--neon);font-weight:600;white-space:nowrap}
 
   /* КАРТОЧКИ-ПИЛЛЫ */
   .pill{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;
-    font-weight:600;font-family:'Oswald';letter-spacing:.5px;text-transform:uppercase}
+    font-weight:600;font-family:'Oswald';letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
   .g{background:rgba(57,224,122,.16);color:var(--neon);border:1px solid rgba(57,224,122,.35)}
   .y{background:rgba(240,168,42,.16);color:var(--warn);border:1px solid rgba(240,168,42,.4)}
   .o{background:rgba(255,122,61,.16);color:var(--orange);border:1px solid rgba(255,122,61,.4)}
@@ -111,7 +111,9 @@
 
   /* ПОЛОСЫ ШАНСОВ */
   .odds td{padding:10px}
-  .bar{height:10px;border-radius:6px;background:#06120c;overflow:hidden;border:1px solid var(--line)}
+  .odds .team{width:160px}
+  .odds .num{width:50px}
+  .bar{height:10px;border-radius:6px;background:#06120c;overflow:hidden;border:1px solid var(--line);min-width:80px}
   .bar > span{display:block;height:100%;
     background:linear-gradient(90deg,var(--neon),var(--gold));border-radius:6px}
   .pct{font-family:'Oswald';font-weight:600;color:var(--chalk)}
@@ -121,6 +123,51 @@
   .foot a{color:var(--neon);text-decoration:none}
   .foot a:hover{text-decoration:underline}
   .yc{display:inline-block;width:11px;height:15px;border-radius:2px;vertical-align:-2px}
+
+  /* ===== ПЛАНШЕТ ===== */
+  @media(max-width:720px){
+    .kpis{grid-template-columns:1fr 1fr;gap:12px}
+    .kpis .kpi:last-child{grid-column:1 / -1}
+    .cols-2{grid-template-columns:1fr;gap:0}
+  }
+
+  /* ===== МОБИЛЬНЫЙ ===== */
+  @media(max-width:560px){
+    .wrap{padding:0 14px}
+    .scoreboard{padding:18px 0 14px;margin-bottom:20px}
+    h1{font-size:25px}
+    .tagline{font-size:12px}
+    .stamp{display:inline-block;margin-top:6px}
+    .kpis{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+    .kpi{padding:12px 14px}
+    .kpi .val{font-size:30px}
+    .card{padding:15px;border-radius:10px}
+    .card > h2{font-size:13px;letter-spacing:1px}
+    .matchup{font-size:22px;gap:8px}
+    .matchup .vs{font-size:13px;padding:3px 8px}
+    .champ{font-size:16px}
+    table{font-size:13px}
+    th,td{padding:7px 6px}
+
+    /* широкие таблицы со скроллом — узкие отдают горизонталь */
+    .tw table{min-width:340px}
+
+    /* текстовые таблицы → карточки */
+    table.resp{min-width:0}
+    table.resp thead{display:none}
+    table.resp tr{display:block;background:var(--panel2);border:1px solid var(--line);
+      border-radius:8px;margin-bottom:10px;padding:8px 10px}
+    table.resp tr:last-child{margin-bottom:0}
+    table.resp td{display:block;border:none;padding:3px 0}
+    table.resp td::before{content:attr(data-label);display:block;
+      color:var(--mut);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+    table.resp td:first-child{font-family:'Oswald';font-size:15px;font-weight:600}
+    table.resp td:first-child::before{display:none}
+
+    /* шансы: убираем фиксированные ширины, всё в строку */
+    .odds .team{width:auto}
+    .odds .num{width:auto}
+  }
 </style>
 </head>
 <body>
@@ -141,6 +188,21 @@
     <div class="kpi"><div class="lbl">До финала</div><div class="val" id="countdown">— <small>дней</small></div></div>
   </div>
 
+  <section class="card">
+    <h2>📅 Матчи сегодня · 30 июня <span style="color:var(--mut);font-weight:400;font-size:11px">(время МСК)</span></h2>
+    <div class="tw">
+    <table>
+      <thead><tr><th>МСК</th><th>Матч</th><th>Стадия · город</th></tr></thead>
+      <tbody>
+        <tr><td class="pct" style="white-space:nowrap">19:00</td><td>🇨🇮 Кот-д'Ивуар — 🇳🇴 Норвегия</td><td class="done">1/16 · Арлингтон</td></tr>
+        <tr><td class="pct" style="white-space:nowrap">00:00<small style="color:var(--mut)"> +1</small></td><td>🇫🇷 Франция — 🇸🇪 Швеция</td><td class="done">1/16 · Нью-Джерси</td></tr>
+        <tr><td class="pct" style="white-space:nowrap">04:00<small style="color:var(--mut)"> +1</small></td><td>🇲🇽 Мексика — 🇪🇨 Эквадор</td><td class="done">1/16 · Мехико</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div style="color:var(--mut);font-size:12px;margin-top:10px">«+1» — в ночь на 1 июля по МСК.</div>
+  </section>
+
   <section class="card final">
     <div class="ttl">🏟️ Прогноз финала · 19 июля · Нью-Джерси</div>
     <div class="matchup">🇫🇷 Франция <span class="vs">VS</span> Аргентина 🇦🇷</div>
@@ -153,12 +215,12 @@
     <h2>📊 Шансы на титул <span style="color:var(--mut);font-weight:400;font-size:11px">(с поправкой на факторы)</span></h2>
     <table class="odds">
       <tbody>
-        <tr><td style="width:160px">🇫🇷 Франция</td><td style="width:50px" class="pct">24%</td><td><div class="bar"><span style="width:24%"></span></div></td></tr>
-        <tr><td>🇪🇸 Испания</td><td class="pct">19%</td><td><div class="bar"><span style="width:19%"></span></div></td></tr>
-        <tr><td>🇦🇷 Аргентина</td><td class="pct">17%</td><td><div class="bar"><span style="width:17%"></span></div></td></tr>
-        <tr><td>🇧🇷 Бразилия</td><td class="pct">13%</td><td><div class="bar"><span style="width:13%"></span></div></td></tr>
-        <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия</td><td class="pct">7%</td><td><div class="bar"><span style="width:7%"></span></div></td></tr>
-        <tr><td>🇲🇦 Марокко</td><td class="pct">7%</td><td><div class="bar"><span style="width:7%"></span></div></td></tr>
+        <tr><td class="team">🇫🇷 Франция</td><td class="num pct">24%</td><td><div class="bar"><span style="width:24%"></span></div></td></tr>
+        <tr><td class="team">🇪🇸 Испания</td><td class="num pct">19%</td><td><div class="bar"><span style="width:19%"></span></div></td></tr>
+        <tr><td class="team">🇦🇷 Аргентина</td><td class="num pct">17%</td><td><div class="bar"><span style="width:17%"></span></div></td></tr>
+        <tr><td class="team">🇧🇷 Бразилия</td><td class="num pct">13%</td><td><div class="bar"><span style="width:13%"></span></div></td></tr>
+        <tr><td class="team">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия</td><td class="num pct">7%</td><td><div class="bar"><span style="width:7%"></span></div></td></tr>
+        <tr><td class="team">🇲🇦 Марокко</td><td class="num pct">7%</td><td><div class="bar"><span style="width:7%"></span></div></td></tr>
       </tbody>
     </table>
     <div style="color:var(--mut);font-size:12px;margin-top:10px">Прикидка вероятностей — авторская, не котировки букмекеров.</div>
@@ -166,6 +228,7 @@
 
   <section class="card">
     <h2>🗺️ Сетка 1/16 — прогноз прохода</h2>
+    <div class="tw">
     <table>
       <thead><tr><th>Пара</th><th>Факторы</th><th>Проход</th></tr></thead>
       <tbody>
@@ -187,6 +250,7 @@
         <tr><td>🇨🇴 Колумбия — 🇬🇭 Гана</td><td><span class="pill g">ровно</span></td><td>Колумбия</td></tr>
       </tbody>
     </table>
+    </div>
   </section>
 
   <div class="cols-2">
@@ -220,42 +284,42 @@
 
   <section class="card">
     <h2>🤕 Травмы фаворитов</h2>
-    <table>
+    <table class="resp">
       <thead><tr><th>Сборная</th><th>Потери / под вопросом</th><th>Тяжесть</th></tr></thead>
       <tbody>
-        <tr><td>🇧🇷 Бразилия</td><td>Родриго (кресты, вне), Эстеван (бедро), Милитан (операция), Неймар (икра, под вопросом)</td><td><span class="pill r">тяжёлое</span></td></tr>
-        <tr><td>🇪🇸 Испания</td><td>Ямаль (пах/бедро, под вопросом), Н. Уильямс и Пино (повреждения с Уругваем), Фермин Лопес (стопа)</td><td><span class="pill o">серьёзное</span></td></tr>
-        <tr><td>🇦🇷 Аргентина</td><td>Месси (бедро, под вопросом), Балерди (икра), Паникелли (кресты)</td><td><span class="pill o">серьёзное</span></td></tr>
-        <tr><td>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия</td><td>Грилиш (стопа), Ливраменто</td><td><span class="pill y">умеренное</span></td></tr>
-        <tr><td>🇫🇷 Франция</td><td>Экитике (ахилл) — игрок ротации</td><td><span class="pill g">лёгкое</span></td></tr>
+        <tr><td data-label="Сборная">🇧🇷 Бразилия</td><td data-label="Потери">Родриго (кресты, вне), Эстеван (бедро), Милитан (операция), Неймар (икра, под вопросом)</td><td data-label="Тяжесть"><span class="pill r">тяжёлое</span></td></tr>
+        <tr><td data-label="Сборная">🇪🇸 Испания</td><td data-label="Потери">Ямаль (пах/бедро, под вопросом), Н. Уильямс и Пино (повреждения с Уругваем), Фермин Лопес (стопа)</td><td data-label="Тяжесть"><span class="pill o">серьёзное</span></td></tr>
+        <tr><td data-label="Сборная">🇦🇷 Аргентина</td><td data-label="Потери">Месси (бедро, под вопросом), Балерди (икра), Паникелли (кресты)</td><td data-label="Тяжесть"><span class="pill o">серьёзное</span></td></tr>
+        <tr><td data-label="Сборная">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Англия</td><td data-label="Потери">Грилиш (стопа), Ливраменто</td><td data-label="Тяжесть"><span class="pill y">умеренное</span></td></tr>
+        <tr><td data-label="Сборная">🇫🇷 Франция</td><td data-label="Потери">Экитике (ахилл) — игрок ротации</td><td data-label="Тяжесть"><span class="pill g">лёгкое</span></td></tr>
       </tbody>
     </table>
   </section>
 
   <section class="card">
     <h2>⚙️ Прочие факторы влияния</h2>
-    <table>
+    <table class="resp">
       <thead><tr><th>Фактор</th><th>Кого касается</th><th>Влияние на прогноз</th></tr></thead>
       <tbody>
         <tr>
-          <td><span class="yc" style="background:var(--gold)"></span> Дисквалификации</td>
-          <td>Все сборные</td>
-          <td>Жёлтые сброшены после группы → в 1/16 у всех чистый лист; снова сброс после 1/4. Финал пропускают только за удаление в 1/2. Сейчас фактор низкий, копится к четвертьфиналам.</td>
+          <td data-label="Фактор"><span class="yc" style="background:var(--gold)"></span> Дисквалификации</td>
+          <td data-label="Кого касается">Все сборные</td>
+          <td data-label="Влияние">Жёлтые сброшены после группы → в 1/16 у всех чистый лист; снова сброс после 1/4. Финал пропускают только за удаление в 1/2. Сейчас фактор низкий, копится к четвертьфиналам.</td>
         </tr>
         <tr>
-          <td>🌡️ Жара и зной</td>
-          <td>Дневные матчи: Хьюстон, Даллас, Монтеррей, Майами</td>
-          <td>&gt;⅓ матчей ЧМ в зоне опасной жары. Европейцам (Испания, Англия, Бельгия) в полуденный зной тяжелее; командам из жарких регионов (Марокко, Египет, латиноамериканцы) — легче.</td>
+          <td data-label="Фактор">🌡️ Жара и зной</td>
+          <td data-label="Кого касается">Дневные матчи: Хьюстон, Даллас, Монтеррей, Майами</td>
+          <td data-label="Влияние">&gt;⅓ матчей ЧМ в зоне опасной жары. Европейцам (Испания, Англия, Бельгия) в полуденный зной тяжелее; командам из жарких регионов (Марокко, Египет, латиноамериканцы) — легче.</td>
         </tr>
         <tr>
-          <td>😮‍💨 Усталость и календарь</td>
-          <td>Все, кто идёт в глубину сетки</td>
-          <td>Турнир 39 дней, 4 часовых пояса, джетлаг и ночные слоты. Усталость копится к плей-офф → больше ошибок и мышечных травм; преимущество у глубоких составов (Франция, Англия).</td>
+          <td data-label="Фактор">😮‍💨 Усталость и календарь</td>
+          <td data-label="Кого касается">Все, кто идёт в глубину сетки</td>
+          <td data-label="Влияние">Турнир 39 дней, 4 часовых пояса, джетлаг и ночные слоты. Усталость копится к плей-офф → больше ошибок и мышечных травм; преимущество у глубоких составов (Франция, Англия).</td>
         </tr>
         <tr>
-          <td>🏟️ Фактор поля</td>
-          <td>🇺🇸 США · 🇲🇽 Мексика · 🇨🇦 Канада</td>
-          <td>Хозяева: поддержка трибун, акклиматизация к жаре и поясам, минимум перелётов. Поднимает потолок прохода (Мексика дома в Мехико — ещё и высота).</td>
+          <td data-label="Фактор">🏟️ Фактор поля</td>
+          <td data-label="Кого касается">🇺🇸 США · 🇲🇽 Мексика · 🇨🇦 Канада</td>
+          <td data-label="Влияние">Хозяева: поддержка трибун, акклиматизация к жаре и поясам, минимум перелётов. Поднимает потолок прохода (Мексика дома в Мехико — ещё и высота).</td>
         </tr>
       </tbody>
     </table>
