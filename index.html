@@ -128,6 +128,11 @@
   .yc{display:inline-block;width:11px;height:15px;border-radius:2px;vertical-align:-2px}
 
   /* ===== ОГОНЬ: анимации и эффекты ===== */
+  /* живой газон — медленный проезд полос */
+  @keyframes turfPan{from{background-position:0 0,0 0}to{background-position:0 0,112px 0}}
+  body{animation:turfPan 12s linear infinite}
+  /* SVG-иконки факторов */
+  .ico{width:18px;height:18px;vertical-align:-4px;margin-right:5px;stroke-linecap:round;stroke-linejoin:round}
   @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
   @keyframes glowPulse{0%,100%{box-shadow:0 0 14px var(--neon);opacity:1}50%{box-shadow:0 0 28px var(--neon);opacity:.5}}
   @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
@@ -167,7 +172,7 @@
 
   @media(prefers-reduced-motion:reduce){
     .wrap > *{opacity:1;animation:none}
-    .bar > span,h1 .ball,.scoreboard::after,.champ,.live::before{animation:none}
+    body,.bar > span,h1 .ball,.scoreboard::after,.champ,.live::before{animation:none}
   }
 
   /* ===== ПЛАНШЕТ ===== */
@@ -381,22 +386,22 @@
       <thead><tr><th>Фактор</th><th>Кого касается</th><th>Влияние на прогноз</th></tr></thead>
       <tbody>
         <tr>
-          <td data-label="Фактор"><span class="yc" style="background:var(--gold)"></span> Дисквалификации</td>
+          <td data-label="Фактор"><svg class="ico" viewBox="0 0 24 24" fill="none"><rect x="7" y="4" width="10" height="16" rx="2" fill="var(--gold)" transform="rotate(10 12 12)"/></svg> Дисквалификации</td>
           <td data-label="Кого касается">Все сборные</td>
           <td data-label="Влияние">Жёлтые сброшены после группы → в 1/16 у всех чистый лист; снова сброс после 1/4. Финал пропускают только за удаление в 1/2. Сейчас фактор низкий, копится к четвертьфиналам.</td>
         </tr>
         <tr>
-          <td data-label="Фактор">🌡️ Жара и зной</td>
+          <td data-label="Фактор"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"/></svg> Жара и зной</td>
           <td data-label="Кого касается">Дневные матчи: Хьюстон, Даллас, Монтеррей, Майами</td>
           <td data-label="Влияние">&gt;⅓ матчей ЧМ в зоне опасной жары. Европейцам (Испания, Англия, Бельгия) в полуденный зной тяжелее; командам из жарких регионов (Марокко, Египет, латиноамериканцы) — легче.</td>
         </tr>
         <tr>
-          <td data-label="Фактор">😮‍💨 Усталость и календарь</td>
+          <td data-label="Фактор"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Усталость и календарь</td>
           <td data-label="Кого касается">Все, кто идёт в глубину сетки</td>
           <td data-label="Влияние">Турнир 39 дней, 4 часовых пояса, джетлаг и ночные слоты. Усталость копится к плей-офф → больше ошибок и мышечных травм; преимущество у глубоких составов (Франция, Англия).</td>
         </tr>
         <tr>
-          <td data-label="Фактор">🏟️ Фактор поля</td>
+          <td data-label="Фактор"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="2"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Фактор поля</td>
           <td data-label="Кого касается">🇺🇸 США · 🇲🇽 Мексика · 🇨🇦 Канада</td>
           <td data-label="Влияние">Хозяева: поддержка трибун, акклиматизация к жаре и поясам, минимум перелётов. Поднимает потолок прохода (Мексика дома в Мехико — ещё и высота).</td>
         </tr>
